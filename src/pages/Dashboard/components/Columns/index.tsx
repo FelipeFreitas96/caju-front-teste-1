@@ -1,6 +1,7 @@
 
 import * as S from "./styles";
 import RegistrationCard from "../RegistrationCard";
+import { RegistrationDTO } from "../../interfaces";
 
 const allColumns = [
   { status: 'REVIEW', title: "Pronto para revisar" },
@@ -9,8 +10,9 @@ const allColumns = [
 ];
 
 type Props = {
-  registrations?: any[];
+  registrations?: RegistrationDTO[];
 };
+
 const Collumns = (props: Props) => {
   return (
     <S.Container>
