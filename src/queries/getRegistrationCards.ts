@@ -1,7 +1,7 @@
 import { RegistrationDTO } from "~/pages/Dashboard/interfaces";
 
 export async function getRegistrationCardsFn() {
-  const data = await fetch("http://localhost:3000/registrations");
+  const data = await fetch(`${import.meta.env.VITE_API_URL}/registrations`);
   const response = await data.json();
   return response as RegistrationDTO[];
 }
