@@ -1,7 +1,9 @@
 import * as S from "./styles";
 import RegistrationCard from "../RegistrationCard";
-import { RegistrationDTO } from "../../interfaces";
+import { RegistrationDTO } from "~/domain/dtos/registration";
 import { Loading } from "~/components/Loading";
+import { useContext } from "react";
+import { CPFContext } from "~/context/cpf";
 
 const allColumns = [
   { status: "REVIEW", title: "Pronto para revisar" },
@@ -15,6 +17,7 @@ type Props = {
 };
 
 const Collumns = ({ isLoading, registrations }: Props) => {
+  const { cpf } = useContext(CPFContext);
   return (
     <S.Container>
       {allColumns.map((collum) => {
@@ -26,14 +29,19 @@ const Collumns = ({ isLoading, registrations }: Props) => {
               </S.TitleColumn>
               <S.CollumContent>
                 <Loading isLoading={isLoading}>
-                  {registrations?.map((registration) => {
-                    return (
-                      <RegistrationCard
-                        data={registration}
-                        key={registration.id}
-                      />
-                    );
-                  })}
+                  {(registrations || [])
+                    .filter(
+                      (item) =>
+                        item.status === collum.status && item.cpf.includes(cpf)
+                    )
+                    .map((registration) => {
+                      return (
+                        <RegistrationCard
+                          data={registration}
+                          key={registration.id}
+                        />
+                      );
+                    })}
                 </Loading>
               </S.CollumContent>
             </>

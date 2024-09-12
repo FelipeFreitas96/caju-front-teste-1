@@ -1,5 +1,5 @@
 import { ButtonSmall } from "~/components/Buttons";
-import { RegistrationDTO } from "../../interfaces";
+import { RegistrationDTO } from "~/domain/dtos/registration";
 import * as S from "./styles";
 import {
   HiOutlineMail,
