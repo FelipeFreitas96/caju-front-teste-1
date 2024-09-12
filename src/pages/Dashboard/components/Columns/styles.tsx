@@ -41,5 +41,8 @@ export const TitleColumn = styled.h3<{ status: any }>`
 
 export const CollumContent = styled.div`
   overflow: auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
   max-height: 85%;
 `;

@@ -1,19 +1,20 @@
-
 import * as S from "./styles";
 import RegistrationCard from "../RegistrationCard";
 import { RegistrationDTO } from "../../interfaces";
+import { Loading } from "~/components/Loading";
 
 const allColumns = [
-  { status: 'REVIEW', title: "Pronto para revisar" },
-  { status: 'APPROVED', title: "Aprovado" },
-  { status: 'REPROVED', title: "Reprovado" },
+  { status: "REVIEW", title: "Pronto para revisar" },
+  { status: "APPROVED", title: "Aprovado" },
+  { status: "REPROVED", title: "Reprovado" },
 ];
 
 type Props = {
   registrations?: RegistrationDTO[];
+  isLoading: boolean;
 };
 
-const Collumns = (props: Props) => {
+const Collumns = ({ isLoading, registrations }: Props) => {
   return (
     <S.Container>
       {allColumns.map((collum) => {
@@ -24,14 +25,16 @@ const Collumns = (props: Props) => {
                 {collum.title}
               </S.TitleColumn>
               <S.CollumContent>
-                {props?.registrations?.map((registration) => {
-                  return (
-                    <RegistrationCard
-                      data={registration}
-                      key={registration.id}
-                    />
-                  );
-                })}
+                <Loading isLoading={isLoading}>
+                  {registrations?.map((registration) => {
+                    return (
+                      <RegistrationCard
+                        data={registration}
+                        key={registration.id}
+                      />
+                    );
+                  })}
+                </Loading>
               </S.CollumContent>
             </>
           </S.Column>
