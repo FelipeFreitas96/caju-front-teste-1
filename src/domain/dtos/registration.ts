@@ -1,4 +1,4 @@
-export type RegistrationDTO = {
+export type RegistrationCardDTO = {
   id: string;
   employeeName: string;
   email: string;
@@ -7,6 +7,7 @@ export type RegistrationDTO = {
   cpf: string;
 };
 
+export type FormRegistrationCardDTO = Omit<RegistrationCardDTO, "id" | "status">;
 export type GetRegistrationCardsFn = {
   queryKey: [string];
 };

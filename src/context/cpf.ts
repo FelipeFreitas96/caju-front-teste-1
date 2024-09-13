@@ -1,6 +1,8 @@
 import * as React from "react";
 
-export const CPFContext = React.createContext({
-    cpf: "",
-    setCPF: (_: string) => {},
-});
+interface CPFContextInterface {
+  cpf: string;
+  setCPF: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const CPFContext = React.createContext<CPFContextInterface | undefined>(undefined);

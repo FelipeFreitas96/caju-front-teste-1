@@ -2,8 +2,7 @@ import styled from "styled-components";
 import { _IconButtonStyled } from "~/components/Buttons/IconButton";
 import Button from "~/components/Buttons";
 
-
-export const Container = styled.div`
+export const Content = styled.form`
   display: flex;
   align-items: center;
   justify-content: center;

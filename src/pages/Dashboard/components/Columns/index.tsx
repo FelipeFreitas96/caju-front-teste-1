@@ -1,6 +1,6 @@
 import * as S from "./styles";
 import RegistrationCard from "../RegistrationCard";
-import { RegistrationDTO } from "~/domain/dtos/registration";
+import { RegistrationCardDTO } from "~/domain/dtos/registration";
 import { Loading } from "~/components/Loading";
 import { useContext } from "react";
 import { CPFContext } from "~/context/cpf";
@@ -12,12 +12,14 @@ const allColumns = [
 ];
 
 type Props = {
-  registrations?: RegistrationDTO[];
+  registrations?: RegistrationCardDTO[];
   isLoading: boolean;
 };
 
 const Collumns = ({ isLoading, registrations }: Props) => {
-  const { cpf } = useContext(CPFContext);
+  const cpfContext = useContext(CPFContext);
+  console.log(registrations);
+  
   return (
     <S.Container>
       {allColumns.map((collum) => {
@@ -32,7 +34,8 @@ const Collumns = ({ isLoading, registrations }: Props) => {
                   {(registrations || [])
                     .filter(
                       (item) =>
-                        item.status === collum.status && item.cpf.includes(cpf)
+                        item.status === collum.status &&
+                        item.cpf.includes(cpfContext?.cpf || "")
                     )
                     .map((registration) => {
                       return (

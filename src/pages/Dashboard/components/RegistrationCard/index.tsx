@@ -1,5 +1,5 @@
 import { ButtonSmall } from "~/components/Buttons";
-import { RegistrationDTO } from "~/domain/dtos/registration";
+import { RegistrationCardDTO } from "~/domain/dtos/registration";
 import * as S from "./styles";
 import {
   HiOutlineMail,
@@ -9,7 +9,7 @@ import {
 } from "react-icons/hi";
 
 type Props = {
-  data: RegistrationDTO;
+  data: RegistrationCardDTO;
 };
 
 const RegistrationCard = ({ data }: Props) => {
