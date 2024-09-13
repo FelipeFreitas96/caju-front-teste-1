@@ -13,6 +13,8 @@ import { FormRegistrationCardDTO } from "~/domain/dtos/registration";
 import { CPFValidator } from "~/helpers/validateCPF";
 import { toast } from "react-toastify";
 import { useMask } from "@react-input/mask";
+import { useContext } from "react";
+import { ModalContext } from "~/context/modal";
 
 const RegistrationCardSchema = Yup.object().shape({
   cpf: Yup.string()
@@ -29,6 +31,7 @@ const RegistrationCardSchema = Yup.object().shape({
 
 const NewUserPage = () => {
   const history = useHistory();
+  const modalContext = useContext(ModalContext);
   const inputRef = useMask({
     mask: "___.___.___-__",
     replacement: { _: /\d/ },
@@ -46,21 +49,37 @@ const NewUserPage = () => {
       employeeName: "",
     },
     onSubmit: async (values: FormRegistrationCardDTO) => {
-      try {
-        await RegistrationCardSchema.validate(values);
-        await mutate.mutateAsync({
-          ...values,
-          cpf: values.cpf.replace(/\D/g, ""),
-          admissionDate: values.admissionDate.split("-").reverse().join("/"),
-          id: Math.random().toString(36).substring(7),
-          status: "REVIEW",
-        });
-        history.push(routes.dashboard);
-        toast.success("Funcionário cadastrado com sucesso");
-      } catch (err) {
-        const error = err as Yup.ValidationError;
-        toast.error(error.message);
-      }
+      modalContext?.open({
+        description: `Deseja realmente adicionar o funcionário ${values.employeeName}?`,
+        title: "Adicionar funcionário",
+        btns: [
+          {
+            id: "confirm-button",
+            label: "Confirmar",
+            onClick: async () => {
+              try {
+                await RegistrationCardSchema.validate(values);
+                await mutate.mutateAsync({
+                  ...values,
+                  cpf: values.cpf.replace(/\D/g, ""),
+                  admissionDate: values.admissionDate
+                    .split("-")
+                    .reverse()
+                    .join("/"),
+                  id: Math.random().toString(36).substring(7),
+                  status: "REVIEW",
+                });
+                history.push(routes.dashboard);
+                toast.success("Funcionário cadastrado com sucesso");
+              } catch (err) {
+                const error = err as Yup.ValidationError;
+                toast.error(error.message);
+              }
+              modalContext?.close();
+            },
+          },
+        ],
+      });
     },
   });
 

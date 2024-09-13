@@ -14,7 +14,9 @@ import {
   putRegistrationCardFn,
 } from "~/queries/registrationCard";
 import { toast } from "react-toastify";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { ModalContext } from "~/context/modal";
+import { StatusModalTranslation } from "~/domain/translations/status";
 
 type Props = {
   data: RegistrationCardDTO;
@@ -23,6 +25,7 @@ type Props = {
 const RegistrationCard = ({ data }: Props) => {
   const isInReview = data.status === "REVIEW";
   const queryClient = useQueryClient();
+  const modalContext = useContext(ModalContext);
   const updateMutate = useMutation({
     mutationFn: putRegistrationCardFn,
   });
@@ -32,46 +35,76 @@ const RegistrationCard = ({ data }: Props) => {
   });
 
   const onDelete = useCallback(async () => {
-    try {
-      await deleteMutate.mutateAsync(data);
-      await queryClient.refetchQueries({
-        queryKey: [GET_REGISTRATION_CARD_KEY],
-      });
-      toast.success("Funcionário deletado com sucesso");
-    } catch (err) {
-      toast.error("Erro ao deletar funcionário, tente novamente.");
-    }
+    modalContext?.open({
+      description: `Deseja realmente deletar o funcionário ${data.employeeName}?`,
+      title: "Deletar Funcionário",
+      btns: [
+        {
+          id: "confirm-button",
+          label: "Confirmar",
+          onClick: async () => {
+            await deleteMutate.mutateAsync(data, {
+              onSuccess: async () => {
+                await queryClient.refetchQueries({
+                  queryKey: [GET_REGISTRATION_CARD_KEY],
+                });
+                toast.success("Funcionário deletado com sucesso");
+              },
+              onError: () => {
+                toast.error("Erro ao deletar funcionário, tente novamente.");
+              },
+            });
+            modalContext?.close();
+          },
+        },
+      ],
+    });
   }, [data]);
 
   const onChangeStatus = useCallback(
     (status: RegistrationCardDTO["status"]) => async () => {
       if (data.status == status) return;
-      await updateMutate.mutateAsync(
-        {
-          ...data,
-          status,
-        },
-        {
-          onSuccess: () => {
-            if (status === "APPROVED") {
-              toast.success("Funcionário aprovado com sucesso");
-            } else if (status === "REPROVED") {
-              toast.success("Funcionário reprovado com sucesso");
-            } else if (status === "REVIEW") {
-              toast.success("Funcionário enviado para revisão com sucesso");
-            }
+      modalContext?.open({
+        title: `Mudança de Status`,
+        description: `Deseja realmente ${StatusModalTranslation[status]} o funcionário ${data.employeeName}?`,
+        btns: [
+          {
+            id: "confirm-button",
+            label: "Confirmar",
+            onClick: async () => {
+              modalContext?.close();
+              await updateMutate.mutateAsync(
+                {
+                  ...data,
+                  status,
+                },
+                {
+                  onSuccess: () => {
+                    if (status === "APPROVED") {
+                      toast.success("Funcionário aprovado com sucesso");
+                    } else if (status === "REPROVED") {
+                      toast.success("Funcionário reprovado com sucesso");
+                    } else if (status === "REVIEW") {
+                      toast.success(
+                        "Funcionário enviado para revisão com sucesso"
+                      );
+                    }
 
-            queryClient.refetchQueries({
-              queryKey: [GET_REGISTRATION_CARD_KEY],
-            });
+                    queryClient.refetchQueries({
+                      queryKey: [GET_REGISTRATION_CARD_KEY],
+                    });
+                  },
+                  onError: () => {
+                    toast.error(
+                      "Erro ao alterar status do funcionário, tente novamente."
+                    );
+                  },
+                }
+              );
+            },
           },
-          onError: () => {
-            toast.error(
-              "Erro ao alterar status do funcionário, tente novamente."
-            );
-          },
-        }
-      );
+        ],
+      });
     },
     [data]
   );
