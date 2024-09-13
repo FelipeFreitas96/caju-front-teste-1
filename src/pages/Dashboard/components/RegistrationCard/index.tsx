@@ -43,6 +43,7 @@ const RegistrationCard = ({ data }: Props) => {
           id: "confirm-button",
           label: "Confirmar",
           onClick: async () => {
+            modalContext?.close();
             await deleteMutate.mutateAsync(data, {
               onSuccess: async () => {
                 await queryClient.refetchQueries({
@@ -54,7 +55,6 @@ const RegistrationCard = ({ data }: Props) => {
                 toast.error("Erro ao deletar funcionário, tente novamente.");
               },
             });
-            modalContext?.close();
           },
         },
       ],
@@ -64,9 +64,14 @@ const RegistrationCard = ({ data }: Props) => {
   const onChangeStatus = useCallback(
     (status: RegistrationCardDTO["status"]) => async () => {
       if (data.status == status) return;
+      const description = StatusModalTranslation[status].replace(
+        "{employeeName}",
+        data.employeeName
+      );
+
       modalContext?.open({
         title: `Mudança de Status`,
-        description: `Deseja realmente ${StatusModalTranslation[status]} o funcionário ${data.employeeName}?`,
+        description,
         btns: [
           {
             id: "confirm-button",

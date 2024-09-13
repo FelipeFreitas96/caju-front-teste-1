@@ -50,7 +50,7 @@ const NewUserPage = () => {
     },
     onSubmit: async (values: FormRegistrationCardDTO) => {
       modalContext?.open({
-        description: `Deseja realmente adicionar o funcionário ${values.employeeName}?`,
+        description: `Deseja realmente adicionar um novo funcionário?`,
         title: "Adicionar funcionário",
         btns: [
           {

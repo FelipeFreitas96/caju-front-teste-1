@@ -1,5 +1,5 @@
 export const StatusModalTranslation = {
-  REVIEW: "revisar",
-  APPROVED: "aprovar",
-  REPROVED: "reprovar",
+  REVIEW: "Você tem certeza que deseja enviar o {employeeName} para revisão?",
+  APPROVED: "Você tem certeza que deseja aprovar o {employeeName}?",
+  REPROVED: "Você tem certeza que deseja reprovar o {employeeName}?",
 };
