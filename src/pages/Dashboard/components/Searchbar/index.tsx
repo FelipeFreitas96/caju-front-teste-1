@@ -3,7 +3,7 @@ import { HiRefresh } from "react-icons/hi";
 import { useHistory } from "react-router-dom";
 import Button from "~/components/Buttons";
 import { IconButton } from "~/components/Buttons/IconButton";
-import { GET_REGISTRATION_CARD_KEY } from "~/queries/getRegistrationCards";
+import { GET_REGISTRATION_CARD_KEY } from "~/queries/registrationCard";
 import { CPFContext } from "~/context/cpf";
 import TextField from "~/components/TextField";
 import routes from "~/router/routes";

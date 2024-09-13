@@ -8,7 +8,7 @@ import { IconButton } from "~/components/Buttons/IconButton";
 import { useHistory } from "react-router-dom";
 import routes from "~/router/routes";
 import { useMutation } from "@tanstack/react-query";
-import { postRegistrationCardFn } from "~/queries/getRegistrationCards";
+import { postRegistrationCardFn } from "~/queries/registrationCard";
 import { FormRegistrationCardDTO } from "~/domain/dtos/registration";
 import { CPFValidator } from "~/helpers/validateCPF";
 import { toast } from "react-toastify";
@@ -51,10 +51,12 @@ const NewUserPage = () => {
         await mutate.mutateAsync({
           ...values,
           cpf: values.cpf.replace(/\D/g, ""),
+          admissionDate: values.admissionDate.split("-").reverse().join("/"),
           id: Math.random().toString(36).substring(7),
           status: "REVIEW",
         });
         history.push(routes.dashboard);
+        toast.success("Funcionário cadastrado com sucesso");
       } catch (err) {
         const error = err as Yup.ValidationError;
         toast.error(error.message);
